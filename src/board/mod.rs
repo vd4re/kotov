@@ -37,6 +37,13 @@ impl const From<u8> for Square {
     }
 }
 
+#[rustfmt::skip]
+#[repr(u8)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum File {
+    A, B, C, D, E, F, G, H,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

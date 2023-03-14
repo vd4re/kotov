@@ -49,6 +49,24 @@ impl const From<super::Square> for Bitboard {
     }
 }
 
+impl const From<super::File> for Bitboard {
+    fn from(file: super::File) -> Self {
+        use const_for::*;
+
+        let mut i = 0;
+
+        const_for!(r in 0..8 => {
+            const_for!(f in 0..8 => {
+                if f == file as u8 {
+                    i |= 1 << r * 8 + f;
+                }
+            });
+        });
+
+        Self(i)
+    }
+}
+
 impl core::fmt::Debug for Bitboard {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         let mut output = String::new();
@@ -72,6 +90,18 @@ mod tests {
         assert_eq!(
             Bitboard::from(super::super::Square::H1),
             Bitboard::new(1 << 63)
+        );
+    }
+
+    #[test]
+    fn bitboard_from_file() {
+        assert_eq!(
+            Bitboard::from(super::super::File::A),
+            Bitboard::new(72340172838076673)
+        );
+        assert_eq!(
+            Bitboard::from(super::super::File::H),
+            Bitboard::new(9259542123273814144)
         );
     }
 }
