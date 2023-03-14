@@ -2,8 +2,8 @@
 pub struct Bitboard(pub u64);
 
 impl Bitboard {
-    pub const fn new() -> Self {
-        Self(0)
+    pub const fn new(i: u64) -> Self {
+        Self(i)
     }
 
     #[inline(always)]
@@ -37,6 +37,18 @@ impl Bitboard {
     }
 }
 
+impl const From<u8> for Bitboard {
+    fn from(i: u8) -> Self {
+        Self(1 << i)
+    }
+}
+
+impl const From<super::Square> for Bitboard {
+    fn from(square: super::Square) -> Self {
+        Self(1 << square as u64)
+    }
+}
+
 impl core::fmt::Debug for Bitboard {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         let mut output = String::new();
@@ -46,6 +58,20 @@ impl core::fmt::Debug for Bitboard {
             }
             output.push(if self.is_set(i) { '1' } else { '0' });
         }
-        write!(f, "{} = {}", output, self.0)
+        write!(f, "\n{} = {}", output, self.0)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn bitboard_from_square() {
+        assert_eq!(Bitboard::from(super::super::Square::A8), Bitboard::new(1));
+        assert_eq!(
+            Bitboard::from(super::super::Square::H1),
+            Bitboard::new(1 << 63)
+        );
     }
 }
